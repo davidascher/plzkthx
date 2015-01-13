@@ -275,8 +275,8 @@ var getUserData = function(username, next, err) {
       }
   };
   request.get(options, function(err, ret, body) {
-    // console.log(err, ret);
-    if (ret.statusCode >= 400) {
+    console.log(err, body);
+    if (!err) {
       next(ret.statusCode, JSON.parse(body));
     } else {
       err(ret.statusCode, JSON.parse(body));
