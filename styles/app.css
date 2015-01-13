@@ -1,9 +1,51 @@
-img.avatar {
-  width: 32px;
-  height: 32px;
+.profile-pic {
+  position: absolute;
+  z-index: 999;
+  width: 64px;
+  height: 64px;
+  left: 33px;
+  border: 3px solid #FFF;
+  border-radius: 100px;
+  -webkit-border-radius: 100px;
+  -moz-border-radius: 100px;
+  top: 0px;
+  position: relative;
+  overflow:hidden;
+  text-align:center;
+}
+
+.profile-btn-bg{
+  position: absolute;
+  background-color: black;
+  width: 100%;
+  height: 30%;
+  bottom: 0px;
+}
+
+.profile-pic-wrap {
   float: left;
-  margin-left: -12px;
-  margin-right: 12px;
+  padding-right: 70px;
+  padding-bottom: 2em;
+}
+
+.bigblock {
+  padding-bottom: 1em;
+}
+img.avatar {
+  width: 128px;
+  height: 128px;
+}
+
+.mentionblock {
+
+}
+
+.mentionsul {
+  display:block;
+}
+
+li.mention {
+  clear: both;
 }
 
 label {
@@ -39,4 +81,8 @@ input.submit {
 
 .hidden {
   display: none;
+}
+
+.comment {
+  padding-left: 1em;
 }

@@ -21,9 +21,9 @@ var GitHubPerson = React.createClass({
     var that = this;
     getJSON('/api/user/'+handle, function(data) {
       if (data.avatar_url.indexOf('?') != -1) {
-        data.avatar_url = data.avatar_url + '&s=32';
+        data.avatar_url = data.avatar_url + '&s=64';
       } else {
-        data.avatar_url = data.avatar_url + '?s=32';
+        data.avatar_url = data.avatar_url + '?s=64';
       }
       if (that.isMounted()) {
         that.setState({
@@ -40,15 +40,20 @@ var GitHubPerson = React.createClass({
   render: function() {
     var name = this.props.handle;
     return (
-      <a href={this.state.html_url} title={this.state.name}>
-        <img className="avatar" src={this.state.avatar_url}/>
-      </a>);
+      <div className="profile-pic-wrap">
+        <div className="profile-pic">
+          <a href={this.state.html_url} title={this.state.name}>
+            <img className="profile-pic-btn" src={this.state.avatar_url}/>
+          </a>
+        </div>
+      </div>
+      );
   }
 });
 
 var Mention = React.createClass({
   getInitialState: function() {
-    return {"issueState": "open"};
+    return {"issueState": "open", "issueTitle": ""};
   },
   componentDidMount: function() {
     console.log(this.props.comment);
@@ -56,17 +61,26 @@ var Mention = React.createClass({
     var issuesRef = new Firebase("https://debt.firebaseio.com/issues").child(this.props.comment.issue_id).on('value', 
       function(snapshot) {
         issue = snapshot.val();
-        console.log(issue);
-        comp.setState({"issueState": issue.state})
+        if (issue)
+          comp.setState({"issueState": issue.state, "issueTitle": issue.title})
       })
     // get info from the issues firebase and set some properties based on that
   },
   dismiss: function(fbid) {
     var firebaseRef = new Firebase("https://debt.firebaseio.com/asks").child(fbid).update({'dismissed': 'true'});
   },
+  parseBody: function(body) {
+    if (!body) return <span/>;
+    var mentionIndex = body.indexOf("@"+this.props.handle);
+    var beginning = Math.max(0, mentionIndex - 50);
+    var ending = Math.min(mentionIndex+("@"+this.props.handle).length + 50, body.length);
+    var before = body.slice(beginning, mentionIndex);
+    var after = body.slice(mentionIndex + ("@"+this.props.handle).length, ending);
+    return <span>{before}<b>@{this.props.handle}</b>{after}</span>;
+  },
   render: function() {
     comment = this.props.comment;
-    var className = this.state.issueState == "closed" ? "hidden" : ""
+    var className = this.state.issueState == "closed" ? "mention hidden" : "mention"
     if (this.props.question == 'mention') {
       var loggedinUser = readCookie('githubuser');
       var dismiss = this.dismiss.bind(this, this.props.issue_id);
@@ -75,13 +89,18 @@ var Mention = React.createClass({
       } else {
         trashcan = <span/>
       }
+      if (!comment.body) {
+        console.log("WTF", comment);
+      }
+      var parsedBody = this.parseBody(comment.body);
       if (! comment.dismissed) {
         return <li className={className}>
                   <GitHubPerson handle={comment.fromwhom}/>
-                  <b>@{comment.fromwhom }</b>
-                  mentioned @{this.props.handle} in issue 
-                  <a href={comment.ref_html_url}>{comment.issue}</a>
+                  <p className="mentionblock">
+                    <div>In <a href={comment.ref_html_url}>{this.state.issueTitle}</a>:</div>
                     {trashcan}
+                    <div className="comment">{parsedBody}</div>
+                  </p>
                 </li>
       } else {
         return <span></span>
@@ -89,8 +108,9 @@ var Mention = React.createClass({
     } else {
       return(<li className={className}>
                 <GitHubPerson handle={comment.fromwhom }/>
-                <b>{comment.fromwhom }</b> asked for <b>{comment.question}</b> on issue
-                <a href={comment.ref_html_url}>{comment.issue}</a>
+                <p className="mentionblock">
+                  <b>{comment.fromwhom }</b> asked for <b>{comment.question}</b> in <a href={comment.ref_html_url}>{this.state.issueTitle}</a>
+                </p>
               </li>);
     }
   }
@@ -117,7 +137,7 @@ var MentionsList = React.createClass({
       }
     }
     if (bits.length > 0) {
-      return (<ul> {bits} </ul>);
+      return (<ul className="mentionsul"> {bits} </ul>);
     } else {
       return (<div>No outstanding {this.props.type}s</div>);
     }

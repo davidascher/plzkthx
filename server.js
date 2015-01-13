@@ -55,6 +55,7 @@ function askExists(ref, flag, issue, asker, askee) {
 
 function recordMention(data) {
   // We should have only one mention per (issue,fromwhom,towhom) triplet
+  console.log(data);
   asks.child(data.towhom).child(data.fromwhom).child(data.question).child(data.issue_id).set(data)
 }
 
@@ -95,19 +96,22 @@ var parseComment = function(repository, issue, comment, patchComment) {
     if (parts.length > 1) {
       var towhom = parts[1];
       var flag = parts[2];
-      if (! askExists(asks, flag, towhom, fromwhom)) {
-        recordMention({
-          'type': 'flag',
-          'question': flag,
-          'issue_id': issue.id,
-          'issue': repository.name + '/' + String(issue.number),
-          'towhom': towhom,
-          'fromwhom':fromwhom, 
-          'ref_html_url': comment.html_url, 
-          'ref_url': comment.url
-        })
-        line = line + " [\[flagged!\]](http://plzkthx.herokuapp.com)";
-        patchPending = true;
+      if (flag != "") {
+        if (! askExists(asks, flag, towhom, fromwhom)) {
+          recordMention({
+            'type': 'flag',
+            'question': flag,
+            'issue_id': issue.id,
+            'body': body,
+            'issue': repository.name + '/' + String(issue.number),
+            'towhom': towhom,
+            'fromwhom':fromwhom, 
+            'ref_html_url': comment.html_url, 
+            'ref_url': comment.url
+          })
+          line = line + " [\[flagged!\]](http://plzkthx.herokuapp.com)";
+          patchPending = true;
+        }
       }
     }
 
@@ -155,6 +159,7 @@ var parseComment = function(repository, issue, comment, patchComment) {
         recordMention({
           'type': 'mention',
           'towhom': towhom,
+          'body': body,
           'question': 'mention',
           'issue_id': issue.id,
           'issue': repository.name + '/' + String(issue.number),
@@ -228,6 +233,9 @@ function parseRepo(req, org, repo) {
         // we have the issues
         for (var i=0; i<ret.body.length; i++) {
           var issue = ret.body[i];
+          console.log(issue.id);
+          issues.child(issue.id).set(issue);
+
           parseComment(repository, issue, issue, false);
           // then get the comments
           url = issue.url + "/comments?access_token="+encodeURIComponent(token);

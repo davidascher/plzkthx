@@ -3,6 +3,7 @@
 
 var React = require('react');
 var Firebase = require('client-firebase')
+var ReactFireMixin = require('reactfire');
 
 var Repo = React.createClass({
   mixins: [ReactFireMixin],
@@ -57,7 +58,5 @@ var RepoApp = React.createClass({
   }
 });
 
-React.render(
-  <RepoApp/>, 
-  document.getElementById('repos')
-);
+module.exports = RepoApp;
+
