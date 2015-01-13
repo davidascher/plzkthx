@@ -267,6 +267,7 @@ function parseRepo(req, org, repo) {
 var getUserData = function(username, next, err) {
   var url = "https://api.github.com/users/" + username;
   url += "?access_token="+token;
+  console.log(url);
   var options = {
       url: url,
       headers: {
@@ -362,12 +363,15 @@ app.get('/logout', function(req, res) {
 var apicache = require('apicache').middleware;
 
 app.get('/api/user/:username', apicache('1 hour'), function (req, res) {
-  getUserData(req.params.username, function(statuscode, val) {
-    res.setHeader('Cache-Control', 'public, max-age=120000');
-    res.send(statuscode, val);
-  }, function(statuscode, val) {
-    res.send(statuscode, val)
-  })
+  getUserData(req.params.username, 
+    function(statuscode, val) {
+      res.setHeader('Cache-Control', 'public, max-age=120000');
+      res.send(statuscode, val);
+    }, function(statuscode, val) {
+      console.log("Error getting userdata", statuscode, val)
+      res.send(statuscode, val)
+    }
+  )
 })
 
 if (process.env["PROD"]) {
