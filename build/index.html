@@ -1,11 +1,54 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="main.css"/>
+    <meta charset="UTF-8"/>
+    <link rel="stylesheet" href="/main.css"/>
+    <title>kplzhtx</title>
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link href='//fonts.googleapis.com/css?family=Raleway:400,300,600' rel='stylesheet' type='text/css'>
+    <link href="//maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link rel="icon" type="image/png" href="images/favicon.png" />
+
   </head>
   <body>
-    <script>document.write('<script src="http://' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
-    <script src="vendors.js"></script>
-    <script src="main.js"></script>
+    <!-- // not really working for me.
+      <script>document.write('<script src="//' + (location.host || 'localhost').split(':')[0] + ':35729/livereload.js?snipver=1"></' + 'script>')</script>
+    -->
+    <script src="/vendors.js"></script>
+    <script src="/main.js"></script>
+    <div id="navbar">
+      <div id="githublogin">sign in</div>
+    </div>
+    <div class="container">
+      <div class="row">
+        <div class="column" style="margin-top: 1em">
+          <h2><b>kplzthx</b> for <b>
+            @<input id="handle" type="text" onname="handle" placeholder="yourgithubhandle" onkeypress="updateHandle(event)"></b>    
+          </h2>
+          <h3>Flags</h3>
+          <div id="obligations">obs
+          </div>
+          <h3>Outstanding Mentions</h3>
+          <div id="mentions">ments
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="one-half column">
+          <p> As <b>kplzthx.club</b> members, we agree to help each other out.  This page helps us 
+          help each other, by keeping track of questions we have for each other.</p>
+        </div>
+        <div class="one-half column">
+          <p>It was created because one of the features of Bugzilla that we missed in Github Issues
+          was the ability to flag someone as needing to review something or give feedback on a comment.</p>
+        </div>
+    </div>
+    <div class="row">
+      <div id="repos"></div>
+    </div>
   </body>
 </html>
+

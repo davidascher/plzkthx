@@ -125,7 +125,7 @@ var browserifyTask = function (options) {
 var cssTask = function (options) {
     if (options.development) {
       var run = function () {
-        console.log(arguments);
+        // console.log(arguments);
         var start = new Date();
         console.log('Building CSS bundle');
         gulp.src(options.src)

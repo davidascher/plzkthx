@@ -1,0 +1,38 @@
+img.avatar {
+  width: 32px;
+  height: 32px;
+  float: left;
+  margin-left: -12px;
+  margin-right: 12px;
+}
+
+label {
+  display: inline;
+}
+input.submit {
+  display: inline;
+  margin-left: 3em;
+}
+#mentions li, #obligations li {
+  list-style: none;
+  padding-left: 1em;
+}
+
+#handle {
+  display:inline;
+  height: auto !important;
+}
+
+#navbar {
+  width: 100%;
+}
+
+#githublogin {
+  position: absolute;
+  right: 1em;
+  top: 1em;
+}
+
+.dismiss {
+  padding-left: 1em;
+}
