@@ -32,18 +32,9 @@ function setup() {
 function updateData(handleVal) {
   var handle = document.getElementById("handle")
   handle.value = handleVal;
-  var obligations = document.getElementById('obligations');
-  obligations.innerHTML = '';
-  var mentions = document.getElementById('mentions');
-  mentions.innerHTML = '';
-  React.render(
-    <MentionsApp handle={handleVal} type="flag"/>, 
-    obligations
-  );
-  React.render(
-    <MentionsApp handle={handleVal} type="mention"/>, 
-    mentions
-  );
+  var mentionsapp = document.getElementById('mentionsapp');
+  mentionsapp.innerHTML = '';
+  React.render(<MentionsApp handle={handleVal}/>, mentionsapp);
 }
 
 function refresh() {

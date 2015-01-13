@@ -56,7 +56,6 @@ var Mention = React.createClass({
     return {"issueState": "open", "issueTitle": ""};
   },
   componentDidMount: function() {
-    console.log(this.props.comment);
     var comp = this;
     var issuesRef = new Firebase("https://debt.firebaseio.com/issues").child(this.props.comment.issue_id).on('value', 
       function(snapshot) {
@@ -137,9 +136,11 @@ var MentionsList = React.createClass({
       }
     }
     if (bits.length > 0) {
-      return (<ul className="mentionsul"> {bits} </ul>);
+      return (<div><h3>{this.props.title}</h3>
+                   <ul className="mentionsul"> {bits} </ul>
+              </div>); 
     } else {
-      return (<div>No outstanding {this.props.type}s</div>);
+      return (<div></div>);
     }
   }
 });
@@ -162,7 +163,10 @@ var MentionsApp = React.createClass({
 
   render: function() {
     return (
-      <MentionsList type={this.props.type} handle={this.props.handle} mentions={this.state.mentions}/>
+      <div>
+        <MentionsList title="Pending Flags" type="flag" handle={this.props.handle} mentions={this.state.mentions}/>
+        <MentionsList title="Pending Mentions" type="mention" handle={this.props.handle} mentions={this.state.mentions}/>
+      </div>
     );
   }
 });
