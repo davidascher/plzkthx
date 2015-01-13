@@ -45,7 +45,9 @@ img.avatar {
 }
 
 li.mention {
+  list-style: none;
   clear: both;
+  padding-left: 1em;
 }
 
 label {
@@ -55,9 +57,10 @@ input.submit {
   display: inline;
   margin-left: 3em;
 }
-#mentions li, #obligations li {
-  list-style: none;
-  padding-left: 1em;
+
+span.line {
+  display:block;
+  padding:0;
 }
 
 #handle {

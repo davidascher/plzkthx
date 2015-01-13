@@ -40,7 +40,7 @@ asks.once('value', function(snapshot) {
 
 
 function askExists(ref, flag, issue, asker, askee) {
-  var asks_ref = asks.child(asker);
+  var asks_ref = asks.child(asker.toLowerCase());
   asks_ref.on('value', function(snapshot) {
     var asks_of_author = snapshot.val();
     for (key in asks_of_author) {
@@ -56,11 +56,14 @@ function askExists(ref, flag, issue, asker, askee) {
 function recordMention(data) {
   // We should have only one mention per (issue,fromwhom,towhom) triplet
   console.log(data);
-  asks.child(data.towhom).child(data.fromwhom).child(data.question).child(data.issue_id).set(data)
+  asks.child(data.towhom.toLowerCase())
+      .child(data.fromwhom.toLowerCase())
+      .child(data.question)
+      .child(data.issue_id).set(data)
 }
 
 function clearMentions(who, issue_id) {
-  asks.child(who).on('value', function (snapshot) {
+  asks.child(who.toLowerCase()).on('value', function (snapshot) {
     var data = snapshot.val();
     // we need to look at all of people who have made a mention against us, and in there for matching issues
     for (var key in data) {
@@ -69,7 +72,7 @@ function clearMentions(who, issue_id) {
         for (var issue_key in issues) {
           var issue = issues[issue_key];
           if (issue.issue_id == issue_id) {
-            asks.child(who).child(key).child('mention').child(issue_id).remove();
+            asks.child(who.toLowerCase()).child(key).child('mention').child(issue_id).remove();
           }
         }
       }

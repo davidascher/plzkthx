@@ -68,14 +68,32 @@ var Mention = React.createClass({
   dismiss: function(fbid) {
     var firebaseRef = new Firebase("https://debt.firebaseio.com/asks").child(fbid).update({'dismissed': 'true'});
   },
+  linesplit: function(thestring) {
+    lines = thestring.split('\n');
+    bits = lines.map(function(line) { return <span className="line">{line}</span>});
+    return <div>{bits}</div>;
+  },
   parseBody: function(body) {
     if (!body) return <span/>;
-    var mentionIndex = body.indexOf("@"+this.props.handle);
-    var beginning = Math.max(0, mentionIndex - 50);
+    var mentionIndex = body.toLowerCase().indexOf("@"+this.props.handle.toLowerCase());
+    var beginning = Math.max(0, mentionIndex - 100);
     var ending = Math.min(mentionIndex+("@"+this.props.handle).length + 50, body.length);
     var before = body.slice(beginning, mentionIndex);
+    indexOfLastNewline = before.lastIndexOf('\n');
+    if (indexOfLastNewline == -1) indexOfLastNewline = 0;
+    before = before.slice(indexOfLastNewline, -1);
+    // go back another line
+    indexOfLastNewline = before.lastIndexOf('\n');
+    if (indexOfLastNewline == -1) indexOfLastNewline = 0;
+    before = before.slice(indexOfLastNewline);
+    if (indexOfLastNewline != 0) 
+        before = "…" + before;
     var after = body.slice(mentionIndex + ("@"+this.props.handle).length, ending);
-    return <span>{before}<b>@{this.props.handle}</b>{after}</span>;
+    if (ending != body.length) 
+        after = after + "…";
+    var middle = body.slice(mentionIndex, mentionIndex + ("@"+this.props.handle).length)
+
+    return <span>{before} <b>{middle}</b> {after}</span>;
   },
   render: function() {
     comment = this.props.comment;
@@ -153,7 +171,8 @@ var MentionsApp = React.createClass({
   },
 
   componentWillMount: function() {
-    var firebaseRef = new Firebase("https://debt.firebaseio.com/asks").child(this.state.handle);
+    console.log(this.state.handle.toLowerCase())
+    var firebaseRef = new Firebase("https://debt.firebaseio.com/asks").child(this.state.handle.toLowerCase());
     this.bindAsObject(firebaseRef, "mentions");
   },
 
@@ -164,8 +183,8 @@ var MentionsApp = React.createClass({
   render: function() {
     return (
       <div>
-        <MentionsList title="Pending Flags" type="flag" handle={this.props.handle} mentions={this.state.mentions}/>
-        <MentionsList title="Pending Mentions" type="mention" handle={this.props.handle} mentions={this.state.mentions}/>
+        <MentionsList title="Pending Flags" type="flag" handle={this.state.handle} mentions={this.state.mentions}/>
+        <MentionsList title="Pending Mentions" type="mention" handle={this.state.handle} mentions={this.state.mentions}/>
       </div>
     );
   }
