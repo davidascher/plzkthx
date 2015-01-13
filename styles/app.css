@@ -36,3 +36,7 @@ input.submit {
 .dismiss {
   padding-left: 1em;
 }
+
+.hidden {
+  display: none;
+}

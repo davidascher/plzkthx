@@ -37,6 +37,9 @@ input.submit {
   padding-left: 1em;
 }
 
+.hidden {
+  display: none;
+}
 body {
 	background-color: #EAEAEA;
 }

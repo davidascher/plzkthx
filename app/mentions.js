@@ -46,12 +46,58 @@ var GitHubPerson = React.createClass({
   }
 });
 
-var MentionsList = React.createClass({
+var Mention = React.createClass({
+  getInitialState: function() {
+    return {"issueState": "open"};
+  },
+  componentDidMount: function() {
+    console.log(this.props.comment);
+    var comp = this;
+    var issuesRef = new Firebase("https://debt.firebaseio.com/issues").child(this.props.comment.issue_id).on('value', 
+      function(snapshot) {
+        issue = snapshot.val();
+        console.log(issue);
+        comp.setState({"issueState": issue.state})
+      })
+    // get info from the issues firebase and set some properties based on that
+  },
   dismiss: function(fbid) {
     var firebaseRef = new Firebase("https://debt.firebaseio.com/asks").child(fbid).update({'dismissed': 'true'});
   },
   render: function() {
-    var issuesRef = new Firebase("https://debt.firebaseio.com/issues");
+    comment = this.props.comment;
+    var className = this.state.issueState == "closed" ? "hidden" : ""
+    if (this.props.question == 'mention') {
+      var loggedinUser = readCookie('githubuser');
+      var dismiss = this.dismiss.bind(this, this.props.issue_id);
+      if (loggedinUser == this.props.handle) {
+        trashcan = <a className="dismiss" href="#" onClick={dismiss}><i className="fa fa-trash" ></i></a>;
+      } else {
+        trashcan = <span/>
+      }
+      if (! comment.dismissed) {
+        return <li className={className}>
+                  <GitHubPerson handle={comment.fromwhom}/>
+                  <b>@{comment.fromwhom }</b>
+                  mentioned @{this.props.handle} in issue 
+                  <a href={comment.ref_html_url}>{comment.issue}</a>
+                    {trashcan}
+                </li>
+      } else {
+        return <span></span>
+      }
+    } else {
+      return(<li className={className}>
+                <GitHubPerson handle={comment.fromwhom }/>
+                <b>{comment.fromwhom }</b> asked for <b>{comment.question}</b> on issue
+                <a href={comment.ref_html_url}>{comment.issue}</a>
+              </li>);
+    }
+  }
+})
+
+var MentionsList = React.createClass({
+  render: function() {
     var bits = [];
     var mentions = this.props.mentions
     for (var fromwhom in mentions) {
@@ -66,28 +112,14 @@ var MentionsList = React.createClass({
           comment = tomefromthem[question][issue_id];
           if (comment.type != this.props.type) continue;
           var unique_id = this.props.handle+'/'+fromwhom+'/'+question+'/'+comment.issue_id;
-          if (question == 'mention') {
-            var loggedinUser = readCookie('githubuser');
-            if (loggedinUser == this.props.handle) {
-              trashcan = <a className="dismiss" href="#" onClick={dismiss}><i className="fa fa-trash" ></i></a>;
-            } else {
-              trashcan = <span/>
-            }
-            if (! comment.dismissed) {
-              var dismiss = this.dismiss.bind(this, unique_id);
-              bits.push(<li key={unique_id}><GitHubPerson handle={comment.fromwhom }/> <b>@{comment.fromwhom }</b> mentioned @{this.props.handle} in issue <a href={comment.ref_html_url}>{comment.issue}</a>{trashcan} </li>);
-            }
-          } else {
-            bits.push(<li key={unique_id}><GitHubPerson handle={comment.fromwhom }/> <b>{comment.fromwhom }</b> asked 
-                        for <b>{comment.question}</b> on issue <a href={comment.ref_html_url}>{comment.issue}</a></li>);
-          }
+          bits.push(<Mention key={unique_id} issue_id={unique_id} handle={this.props.handle} question={question} comment={comment}/>)
         }
       }
     }
     if (bits.length > 0) {
-      return <ul>{ bits }</ul>;
+      return (<ul> {bits} </ul>);
     } else {
-      return <div>No outstanding {this.props.type}s</div>
+      return (<div>No outstanding {this.props.type}s</div>);
     }
   }
 });

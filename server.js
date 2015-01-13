@@ -69,7 +69,6 @@ function clearMentions(who, issue_id) {
           var issue = issues[issue_key];
           if (issue.issue_id == issue_id) {
             asks.child(who).child(key).child('mention').child(issue_id).remove();
-            console.log("CLEARING", issue_id);
           }
         }
       }
@@ -96,7 +95,6 @@ var parseComment = function(repository, issue, comment, patchComment) {
     if (parts.length > 1) {
       var towhom = parts[1];
       var flag = parts[2];
-      console.log('ASK:', flag, fromwhom, towhom);
       if (! askExists(asks, flag, towhom, fromwhom)) {
         recordMention({
           'type': 'flag',
@@ -267,7 +265,6 @@ function parseRepo(req, org, repo) {
 var getUserData = function(username, next, err) {
   var url = "https://api.github.com/users/" + username;
   url += "?access_token="+token;
-  console.log(url);
   var options = {
       url: url,
       headers: {
@@ -420,6 +417,7 @@ app.post('/postreceive',
     if (eventType == 'issues') {
       var issue = issues.child(req.body.issue.id)
       issue.set(req.body.issue);
+      console.log(req.body.issue.id, req.body.issue);
     } else if (eventType == 'issue_comment') {
       var issue = issues.child(req.body.issue.id);
       issue.transaction(function(currentIssue) {
