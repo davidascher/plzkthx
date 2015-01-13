@@ -108,7 +108,7 @@ var parseComment = function(repository, issue, comment, patchComment) {
           'ref_html_url': comment.html_url, 
           'ref_url': comment.url
         })
-        line = line + " [\[flagged!\]](http://mofo-mentions.herokuapp.com)";
+        line = line + " [\[flagged!\]](http://plzkthx.herokuapp.com)";
         patchPending = true;
       }
     }
@@ -123,7 +123,7 @@ var parseComment = function(repository, issue, comment, patchComment) {
       var value = parts[2];
       if (value) {
         clearedFlags.push(flag);
-        line = line + " [\[unflagged\]](http://mofo-mentions.herokuapp.com)";
+        line = line + " [\[unflagged\]](http://plzkthx.herokuapp.com)";
         patchPending = true;
       }
     }    
