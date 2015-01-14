@@ -3,7 +3,6 @@
   z-index: 999;
   width: 64px;
   height: 64px;
-  left: 33px;
   border: 3px solid #FFF;
   border-radius: 100px;
   -webkit-border-radius: 100px;
@@ -24,7 +23,7 @@
 
 .profile-pic-wrap {
   float: left;
-  padding-right: 70px;
+  padding-right: 1em;
   padding-bottom: 2em;
 }
 
@@ -47,7 +46,6 @@ img.avatar {
 li.mention {
   list-style: none;
   clear: both;
-  padding-left: 1em;
 }
 
 label {
@@ -63,9 +61,11 @@ span.line {
   padding:0;
 }
 
+
 #handle {
   display:inline;
   height: auto !important;
+  width: 45%;
 }
 
 #navbar {
@@ -73,6 +73,7 @@ span.line {
 }
 
 #githublogin {
+  width: 12%;
   position: absolute;
   right: 1em;
   top: 1em;

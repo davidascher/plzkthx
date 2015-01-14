@@ -304,7 +304,7 @@ var github = new Github(
 var githubOAuth = require('github-oauth')({
   githubClient: process.env['GITHUB_CLIENT'],
   githubSecret: process.env['GITHUB_SECRET'],
-  baseURL: 'https://75e4be66.ngrok.com',
+  baseURL: process.env["BASEURL"],
   loginURI: '/login',
   callbackURI: '/callback',
   scope: 'user' // optional, default scope is set to user
