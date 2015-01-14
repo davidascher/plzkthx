@@ -8,15 +8,16 @@ var GitHubPerson = require('./githubperson.js');
 
 var Mention = React.createClass({
   getInitialState: function() {
-    return {"issueState": "open", "issueTitle": ""};
+    return {"issue": {"state": "open", "title": "", "url":""}};
   },
   componentDidMount: function() {
     var comp = this;
     var issuesRef = new Firebase("https://debt.firebaseio.com/issues").child(this.props.comment.issue_id).on('value', 
       function(snapshot) {
         issue = snapshot.val();
-        if (issue)
-          comp.setState({"issueState": issue.state, "issueTitle": issue.title})
+        if (issue) {
+          comp.setState({"issue": issue})
+        }
       })
     // get info from the issues firebase and set some properties based on that
   },
@@ -52,7 +53,15 @@ var Mention = React.createClass({
   },
   render: function() {
     comment = this.props.comment;
-    var className = this.state.issueState == "closed" ? "mention hidden" : "mention"
+    var className = this.state.issue.state == "closed" ? "mention hidden" : "mention";
+    var issue_url = comment.ref_url;
+    console.log("issue_url", issue_url);
+    var repo_name = '';
+    if (issue_url) {
+      repo_name = issue_url.slice(issue_url.indexOf("/repos/")+"/repos/".length) ;
+      repo_name = repo_name.slice(0, repo_name.indexOf('/issues/'));
+    } 
+    console.log("repo_name", repo_name);
     if (this.props.question == 'mention') {
       var loggedinUser = readCookie('githubuser');
       var dismiss = this.dismiss.bind(this, this.props.issue_id);
@@ -71,7 +80,7 @@ var Mention = React.createClass({
                     <GitHubPerson handle={comment.fromwhom}/>
                   </div>
                   <div className="mentionblock">
-                    <div>In <a href={comment.ref_html_url}>{this.state.issueTitle}</a>: {trashcan}</div>
+                    <div>{repo_name}/<a href={comment.ref_html_url}>{this.state.issue.title}</a> : {trashcan}</div>
                     <div className="comment">{parsedBody}</div>
                   </div>
                 </li>)
@@ -79,13 +88,14 @@ var Mention = React.createClass({
         return <span></span>
       }
     } else {
+      console.log(comment)
       return(<li className={className}>
                 <div className="profile-pic-wrap">
                   <GitHubPerson handle={comment.fromwhom }/>
                 </div>
-                <p className="mentionblock">
-                  <b>{comment.fromwhom }</b> asked for <b>{comment.question}</b> in <a href={comment.ref_html_url}>{this.state.issueTitle}</a>
-                </p>
+                <div className="mentionblock">
+                  <b>{comment.fromwhom }</b> asked for <b>{comment.question}</b> in {repo_name}/<a href={comment.ref_html_url}>{this.state.issue.title}</a>
+                </div>
               </li>);
     }
   }
@@ -112,7 +122,7 @@ var MentionsList = React.createClass({
       }
     }
     if (bits.length > 0) {
-      return (<div><h3>{this.props.title}</h3>
+      return (<div><h3 className="mentionsheading">{this.props.title}</h3>
                    <ul className="mentionsul"> {bits} </ul>
               </div>); 
     } else {
@@ -129,7 +139,6 @@ var MentionsApp = React.createClass({
   },
 
   componentWillMount: function() {
-    console.log(this.state.handle.toLowerCase())
     var firebaseRef = new Firebase("https://debt.firebaseio.com/asks").child(this.state.handle.toLowerCase());
     this.bindAsObject(firebaseRef, "mentions");
   },

@@ -39,6 +39,9 @@ img.avatar {
 
 }
 
+.mentionsheading {
+  clear: both;
+}
 .mentionsul {
   display:block;
 }
@@ -88,8 +91,25 @@ span.line {
 }
 
 .comment {
-  padding-left: 1em;
+  /*font-size: 18px;*/
+  font-style: italic;
+  margin: 0.25em 5em;
+  padding: 0.25em 3em;
+  /*line-height: 1.45;*/
+  position: relative;
+  color: #383838;
 }
+
+.comment:before {
+  display: block;
+  content: "\201C";
+  font-size: 80px;
+  position: absolute;
+  left: 0;
+  top: -.4em;
+  color: rgba(122, 122, 122, 0.34);
+}
+
 body {
 	background-color: #EAEAEA;
 }

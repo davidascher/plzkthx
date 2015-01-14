@@ -18,7 +18,6 @@ var GitHubPerson = React.createClass({
     var handle = this.props.handle.toLowerCase();
     var that = this;
     getJSON('/api/user/'+handle, function(data) {
-      console.log(data);
       if (data.avatar_url.indexOf('?') != -1) {
         data.avatar_url = data.avatar_url + '&s=64';
       } else {

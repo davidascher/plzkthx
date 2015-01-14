@@ -55,7 +55,6 @@ function askExists(ref, flag, issue, asker, askee) {
 
 function recordMention(data) {
   // We should have only one mention per (issue,fromwhom,towhom) triplet
-  console.log(data);
   asks.child(data.towhom.toLowerCase())
       .child(data.fromwhom.toLowerCase())
       .child(data.question)
@@ -236,7 +235,6 @@ function parseRepo(req, org, repo) {
         // we have the issues
         for (var i=0; i<ret.body.length; i++) {
           var issue = ret.body[i];
-          console.log(issue.id);
           issues.child(issue.id).set(issue);
 
           parseComment(repository, issue, issue, false);
@@ -283,7 +281,7 @@ var getUserData = function(username, next, err) {
       }
   };
   request.get(options, function(err, ret, body) {
-    console.log(err, body);
+    // console.log(err, body);
     if (!err) {
       next(ret.statusCode, JSON.parse(body));
     } else {
