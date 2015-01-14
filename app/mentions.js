@@ -32,7 +32,7 @@ var Mention = React.createClass({
   parseBody: function(body) {
     if (!body) return <span/>;
     var mentionIndex = body.toLowerCase().indexOf("@"+this.props.handle.toLowerCase());
-    var beginning = Math.max(0, mentionIndex - 100);
+    var beginning = body;
     var ending = Math.min(mentionIndex+("@"+this.props.handle).length + 50, body.length);
     var before = body.slice(beginning, mentionIndex);
     indexOfLastNewline = before.lastIndexOf('\n');
@@ -55,13 +55,11 @@ var Mention = React.createClass({
     comment = this.props.comment;
     var className = this.state.issue.state == "closed" ? "mention hidden" : "mention";
     var issue_url = comment.ref_url;
-    console.log("issue_url", issue_url);
     var repo_name = '';
     if (issue_url) {
       repo_name = issue_url.slice(issue_url.indexOf("/repos/")+"/repos/".length) ;
       repo_name = repo_name.slice(0, repo_name.indexOf('/issues/'));
     } 
-    console.log("repo_name", repo_name);
     if (this.props.question == 'mention') {
       var loggedinUser = readCookie('githubuser');
       var dismiss = this.dismiss.bind(this, this.props.issue_id);
